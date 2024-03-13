@@ -1,0 +1,20 @@
+{
+  "name": "threejsburstmode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lil-gui": "^0.19.2",
+    "three": "^0.162.0",
+    "vercel": "^33.5.5",
+    "vite": "^5.1.4"
+  }
+}

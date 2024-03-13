@@ -1,0 +1,5 @@
+node_modules
+notes.js
+.DS_Store
+dist
+.vercel
