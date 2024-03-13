@@ -24,9 +24,13 @@ scene.add(ambientLight);
 
 // directional light will provide light with all light rays coming from the same direction. all rays will be parallel
 const directionalLight = new THREE.DirectionalLight(0x0000ff, 0.9);
-directionalLight.position.set(1, 0.25, 0); // this is making the directional light come from the right-hand side.
+//directionalLight.position.set(1, 0.25, 0); // this is making the directional light come from the right-hand side.
 scene.add(directionalLight);
 
+// point light
+const pointLight = new THREE.PointLight(0xff0000, 2.5);
+pointLight.position.set(1, -0.5, 1);
+scene.add(pointLight);
 
 
 
