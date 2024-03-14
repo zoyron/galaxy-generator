@@ -8,6 +8,7 @@ import GUI from "lil-gui";
 // Debug
 const gui = new GUI();
 gui.close();
+
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
 
@@ -16,50 +17,41 @@ const scene = new THREE.Scene();
 
 /**
  * Lights
- * To assist us with the positioning of the lights we can use helpers for lights like we used for axes(axesHelper)
  */
-// Ambient light globally illuminates all objects in the scene equally.
-// this light cannot be used to cast shadows as it does not have a direction. it is the omnidirectional lighting
-//const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // 0.5 because had to make it dim light
-//scene.add(ambientLight);
+// Ambient light
+const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+gui.add(ambientLight, "intensity").min(0).max(3).step(0.001);
+scene.add(ambientLight);
 
-// directional light will provide light with all light rays coming from the same direction. all rays will be parallel
-const directionalLight = new THREE.DirectionalLight(0x0000ff, 2.5);
-//directionalLight.position.set(1, 0.25, 0); // this is making the directional light come from the right-hand side.
+// Directional light
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+directionalLight.position.set(2, 2, -1);
+gui.add(directionalLight, "intensity").min(0).max(3).step(0.001);
+gui.add(directionalLight.position, "x").min(-5).max(5).step(0.001);
+gui.add(directionalLight.position, "y").min(-5).max(5).step(0.001);
+gui.add(directionalLight.position, "z").min(-5).max(5).step(0.001);
 scene.add(directionalLight);
 
-// point light
-const pointLight = new THREE.PointLight(0xff0000, 2.5);
-pointLight.position.set(1, -0.5, 1);
-scene.add(pointLight);
-
-
+/**
+ * Materials
+ */
+const material = new THREE.MeshStandardMaterial();
+material.roughness = 0.7;
+gui.add(material, "metalness").min(0).max(1).step(0.001);
+gui.add(material, "roughness").min(0).max(1).step(0.001);
 
 /**
  * Objects
  */
-// Material
-const material = new THREE.MeshStandardMaterial();
-material.roughness = 0.4;
-//material.wireframe = true;
+const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.25, 32, 32), material);
+sphere.castShadow = true;
 
-// Objects
-const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
-sphere.position.y = -1.5;
-
-const cube = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), material);
-
-const torus = new THREE.Mesh(
-  new THREE.TorusGeometry(0.25, 0.085, 16, 32),
-  material,
-);
-torus.position.y = 1;
-
-const plane = new THREE.Mesh(new THREE.PlaneGeometry(3, 3), material);
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(2.5, 2.5), material);
 plane.rotation.x = -Math.PI * 0.5;
-plane.position.y = -2;
+plane.position.y = -0.5;
+plane.receiveShadow = true;
 
-scene.add(sphere, cube, torus, plane);
+scene.add(sphere, plane);
 
 /**
  * Sizes
@@ -93,9 +85,9 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100,
 );
-camera.position.x = 0;
+camera.position.x = 1;
 camera.position.y = 1;
-camera.position.z = 4;
+camera.position.z = 2;
 scene.add(camera);
 
 // Controls
@@ -110,6 +102,7 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
 
 /**
  * Animate
@@ -118,15 +111,6 @@ const clock = new THREE.Clock();
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
-
-  // Update objects
-  sphere.rotation.y = 0.5 * elapsedTime;
-  cube.rotation.y = 0.5 * elapsedTime;
-  torus.rotation.y = 0.5 * elapsedTime;
-
-  sphere.rotation.x = 0.15 * elapsedTime;
-  cube.rotation.x = 0.15 * elapsedTime;
-  torus.rotation.x = 0.15 * elapsedTime;
 
   // Update controls
   controls.update();
