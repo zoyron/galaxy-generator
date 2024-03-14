@@ -16,14 +16,15 @@ const scene = new THREE.Scene();
 
 /**
  * Lights
+ * To assist us with the positioning of the lights we can use helpers for lights like we used for axes(axesHelper)
  */
 // Ambient light globally illuminates all objects in the scene equally.
 // this light cannot be used to cast shadows as it does not have a direction. it is the omnidirectional lighting
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // 0.5 because had to make it dim light
-scene.add(ambientLight);
+//const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // 0.5 because had to make it dim light
+//scene.add(ambientLight);
 
 // directional light will provide light with all light rays coming from the same direction. all rays will be parallel
-const directionalLight = new THREE.DirectionalLight(0x0000ff, 0.9);
+const directionalLight = new THREE.DirectionalLight(0x0000ff, 2.5);
 //directionalLight.position.set(1, 0.25, 0); // this is making the directional light come from the right-hand side.
 scene.add(directionalLight);
 
@@ -119,9 +120,9 @@ const tick = () => {
   const elapsedTime = clock.getElapsedTime();
 
   // Update objects
-  sphere.rotation.y = 0.1 * elapsedTime;
-  cube.rotation.y = 0.1 * elapsedTime;
-  torus.rotation.y = 0.1 * elapsedTime;
+  sphere.rotation.y = 0.5 * elapsedTime;
+  cube.rotation.y = 0.5 * elapsedTime;
+  torus.rotation.y = 0.5 * elapsedTime;
 
   sphere.rotation.x = 0.15 * elapsedTime;
   cube.rotation.x = 0.15 * elapsedTime;
