@@ -39,6 +39,12 @@
     * 512*2048
 
 
+## Shadows
+
+* Only the following types of lights suppert shadows:
+ * Pointlight
+ * DirectionalLight
+ * Spotlight
 
 
 
