@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import GUI from "lil-gui";
-import { l } from "vite/dist/node/types.d-jgA8ss1A";
 
 /**
  * Base
@@ -16,10 +15,33 @@ const canvas = document.querySelector("canvas.webgl");
 // Scene
 const scene = new THREE.Scene();
 
+// fog
+const fog = new THREE.Fog("#262837", 1, 15);
+scene.fog = fog;
+
+
+
+
 /**
  * Textures
  */
 const textureLoader = new THREE.TextureLoader();
+
+const doorColorTexture = textureLoader.load('./textures/door/color.jpg');
+const doorAlphaTexture = textureLoader.load('./textures/door/alpha.jpg');
+const doorAmbientTexture = textureLoader.load('./textures/door/ambientOcclusion.jpg');
+const doorHeightTexture = textureLoader.load('./textures/door/height.jpg');
+const doorNormalTexture = textureLoader.load('./textures/door/normal.jpg');
+const doorMetalnessTexture = textureLoader.load('./textures/door/metalness.jpg');
+const doorRoughnessTexture = textureLoader.load('./textures/door/roughness.jpg');
+
+const bricksColorTexture = textureLoader.load('./textures/bricks/color.jpg');
+const bricksNormalTexture = textureLoader.load('./textures/bricks/normal.jpg');
+const bricksRoughnessTexture = textureLoader.load('./textures/bricks/roughness.jpg');
+const bricksAmbientTexture = textureLoader.load('./textures/bricks/ambientOcclusion.jpg');
+
+doorColorTexture.colorSpace = THREE.SRGBColorSpace;
+bricksColorTexture.colorSpace = THREE.SRGBColorSpace
 
 /**
  * House
@@ -50,11 +72,21 @@ house.add(roof);
 
 // door
 const door = new THREE.Mesh(
-  new THREE.PlaneGeometry(0.75, 1),
-  new THREE.MeshStandardMaterial({ color: 'brown' })
+  new THREE.PlaneGeometry(1.25, 1.275, 10, 10),
+  new THREE.MeshStandardMaterial({
+    map: doorColorTexture,
+    transparent: true,
+    alphaMap: doorAlphaTexture,
+    aoMap: doorAmbientTexture,
+    displacementMap: doorHeightTexture,
+    displacementScale: 0.05,
+    normalMap: doorNormalTexture,
+    metalnessMap: doorMetalnessTexture,
+    roughnessMap: doorRoughnessTexture,
+  })
 );
 door.position.z = 1 + 0.001;
-door.position.y = 0.75 / 2 + 0.125 ;
+door.position.y = 1.25 / 2  ;
 house.add(door);
 
 // bushes
@@ -82,14 +114,16 @@ scene.add(graves);
 const graveGeometry = new THREE.BoxGeometry(0.3, 0.4, 0.1);
 const graveMaterial = new THREE.MeshStandardMaterial({ color: '#b2b6b1' });
 
-for(let i = 0; i < 25 ; i++){
+for(let i = 0; i < 50 ; i++){
   const angle = Math.random() * Math.PI * 2;
-  const radius = 2.125 + Math.random() * 5.25;
+  const radius = 2+(Math.random() * 2);
   const x = Math.sin(angle) * radius;
   const z = Math.cos(angle) * radius;
 
   const grave = new THREE.Mesh(graveGeometry, graveMaterial);
-  grave.position.set(x, 0, z);
+  grave.position.set(x,0.2, z);
+  grave.rotation.y = (Math.random() - 0.5) * 0.8;
+  grave.rotation.z = (Math.random() - 0.5) * 0.5;
   graves.add(grave);
 }
 
@@ -97,7 +131,7 @@ for(let i = 0; i < 25 ; i++){
 
 // Floor
 const floor = new THREE.Mesh(
-  new THREE.PlaneGeometry(7.5, 7.5),
+  new THREE.PlaneGeometry(8, 8),
   new THREE.MeshStandardMaterial({ color: "#a9c388" }),
 );
 floor.rotation.x = -Math.PI * 0.5;
@@ -108,18 +142,24 @@ scene.add(floor);
  * Lights
  */
 // Ambient light
-const ambientLight = new THREE.AmbientLight("#ffffff", 0.5);
+const ambientLight = new THREE.AmbientLight("#b9d5ff", 0.12);
 gui.add(ambientLight, "intensity").min(0).max(1).step(0.001);
 scene.add(ambientLight);
 
 // Directional light
-const moonLight = new THREE.DirectionalLight("#ffffff", 1.5);
+const moonLight = new THREE.DirectionalLight("#b9d5ff", 0.12);
 moonLight.position.set(4, 5, -2);
 gui.add(moonLight, "intensity").min(0).max(1).step(0.001);
 gui.add(moonLight.position, "x").min(-5).max(5).step(0.001);
 gui.add(moonLight.position, "y").min(-5).max(5).step(0.001);
 gui.add(moonLight.position, "z").min(-5).max(5).step(0.001);
 scene.add(moonLight);
+
+// door light
+const doorLight = new THREE.PointLight('#ff7d46', 1, 7);
+doorLight.position.set(0, 1.5, 1.25);
+house.add(doorLight);
+
 
 /**
  * Sizes
@@ -170,6 +210,7 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor('#262837');
 
 /**
  * Animate
