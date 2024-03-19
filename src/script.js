@@ -43,6 +43,21 @@ const grassNormalTexture = textureLoader.load('./textures/grass/normal.jpg');
 const grassRoughnessTexture = textureLoader.load('./textures/grass/roughness.jpg');
 const grassAmbientTexture = textureLoader.load('./textures/grass/ambientOcclusion.jpg');
 
+// texture repeating
+grassColorTexture.repeat.set(4,4);
+grassNormalTexture.repeat.set(4,4);
+grassRoughnessTexture.repeat.set(4,4);
+grassAmbientTexture.repeat.set(4,4);
+
+grassColorTexture.wrapS = THREE.RepeatWrapping;
+grassNormalTexture.wrapS = THREE.RepeatWrapping;
+grassRoughnessTexture.wrapS = THREE.RepeatWrapping;
+grassAmbientTexture.wrapS = THREE.RepeatWrapping;
+grassColorTexture.wrapT = THREE.RepeatWrapping;
+grassNormalTexture.wrapT = THREE.RepeatWrapping;
+grassRoughnessTexture.wrapT = THREE.RepeatWrapping;
+grassAmbientTexture.wrapT = THREE.RepeatWrapping;
+
 grassColorTexture.colorSpace = THREE.SRGBColorSpace;
 doorColorTexture.colorSpace = THREE.SRGBColorSpace;
 bricksColorTexture.colorSpace = THREE.SRGBColorSpace;
