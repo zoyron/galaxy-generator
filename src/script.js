@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import GUI from "lil-gui";
+import { DoubleSide } from "three";
 
 /**
  * Base
@@ -18,9 +19,6 @@ const scene = new THREE.Scene();
 // fog
 const fog = new THREE.Fog("#262837", 1, 15);
 scene.fog = fog;
-
-
-
 
 /**
  * Textures
@@ -40,8 +38,14 @@ const bricksNormalTexture = textureLoader.load('./textures/bricks/normal.jpg');
 const bricksRoughnessTexture = textureLoader.load('./textures/bricks/roughness.jpg');
 const bricksAmbientTexture = textureLoader.load('./textures/bricks/ambientOcclusion.jpg');
 
+const grassColorTexture = textureLoader.load('./textures/grass/color.jpg');
+const grassNormalTexture = textureLoader.load('./textures/grass/normal.jpg');
+const grassRoughnessTexture = textureLoader.load('./textures/grass/roughness.jpg');
+const grassAmbientTexture = textureLoader.load('./textures/grass/ambientOcclusion.jpg');
+
+grassColorTexture.colorSpace = THREE.SRGBColorSpace;
 doorColorTexture.colorSpace = THREE.SRGBColorSpace;
-bricksColorTexture.colorSpace = THREE.SRGBColorSpace
+bricksColorTexture.colorSpace = THREE.SRGBColorSpace;
 
 /**
  * House
@@ -56,7 +60,12 @@ scene.add(house);
 // walls
 const walls = new THREE.Mesh(
   new THREE.BoxGeometry(2,1.75,2),
-  new THREE.MeshStandardMaterial({ color: '#C4A484' })
+  new THREE.MeshStandardMaterial({
+    map: bricksColorTexture,
+    aoMap: bricksAmbientTexture,
+    normalMap: bricksNormalTexture,
+    roughnessMap: bricksRoughnessTexture
+  })
 );
 walls.position.y = 1.75 / 2 ;
 house.add(walls);
@@ -132,7 +141,13 @@ for(let i = 0; i < 50 ; i++){
 // Floor
 const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(8, 8),
-  new THREE.MeshStandardMaterial({ color: "#a9c388" }),
+  new THREE.MeshStandardMaterial({
+    side: DoubleSide,
+    map: grassColorTexture,
+    aoMap: grassAmbientTexture,
+    normalMap: grassNormalTexture,
+    roughnessMap: grassRoughnessTexture
+  }),
 );
 floor.rotation.x = -Math.PI * 0.5;
 floor.position.y = 0;
