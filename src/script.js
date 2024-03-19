@@ -251,8 +251,8 @@ const camera = new THREE.PerspectiveCamera(
   100,
 );
 camera.position.x = 4;
-camera.position.y = 2;
-camera.position.z = 5;
+camera.position.y = 4;
+camera.position.z = 8;
 scene.add(camera);
 
 // Controls
@@ -317,7 +317,9 @@ const clock = new THREE.Clock();
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
-
+  house.rotation.y = elapsedTime * 0.025;
+  floor.rotation.z = elapsedTime * 0.025;
+  graves.rotation.y = elapsedTime * 0.025;
   // Ghosts
   const ghost1Angle = elapsedTime * 0.5;
   ghost1.position.x = Math.cos(ghost1Angle) * 4;
