@@ -46,6 +46,11 @@
  * DirectionalLight
  * Spotlight
 
+## Particles
 
+* Creating particles is like reating a mesh:
+  * We need a Geometry
+  * We need a material
+  * A points instance(instead of a mesh instance)
 
 
