@@ -19,10 +19,10 @@ const scene = new THREE.Scene();
  * Galaxy
  */
 const parameters = {};
-parameters.count = 30000;
+parameters.count = 40000;
 parameters.size = 0.01;
 parameters.radius = 5;
-parameters.branches = 3;
+parameters.branches = 4;
 parameters.spin = 1;
 parameters.randomNess = 0.682;
 parameters.insideColor = '#ff6060';
@@ -45,6 +45,9 @@ const generateGalaxy = () => {
   geometry = new THREE.BufferGeometry();
   positions = new Float32Array(parameters.count * 3);
   colors = new Float32Array(parameters.count * 3);
+  const colorInside = new THREE.Color(parameters.insideColor);
+  const colorOutside = new THREE.Color(parameters.outsideColor);
+
 
   // filling up the co-ordinates of the particles of the geometry
   for (let i = 0; i < parameters.count ; i++) {
@@ -62,9 +65,11 @@ const generateGalaxy = () => {
     positions[i3+2] = Math.sin(branchesAngle + spinAngle) * radius + (randomZ / radius);
 
     // colors
-    colors[i3] = 1;
-    colors[i3 + 1] = 0;
-    colors[i3 + 2] = 0;
+    const mixedColor = colorInside.clone();
+    mixedColor.lerp(colorOutside, radius/parameters.radius);
+    colors[i3] = mixedColor.r;
+    colors[i3 + 1] = mixedColor.g;
+    colors[i3 + 2] = mixedColor.b;
   }
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
   geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
@@ -75,6 +80,7 @@ const generateGalaxy = () => {
     sizeAttenuation: true,
     depthWrite: false,
     blending: THREE.AdditiveBlending,
+    vertexColors: true
   });
 
   // creating the particles
@@ -125,8 +131,8 @@ const camera = new THREE.PerspectiveCamera(
   100,
 );
 camera.position.x = 3;
-camera.position.y = 3;
-camera.position.z = 3;
+camera.position.y = 4;
+camera.position.z = 5;
 scene.add(camera);
 
 // Controls
