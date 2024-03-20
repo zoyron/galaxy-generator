@@ -19,17 +19,22 @@ const scene = new THREE.Scene();
  * Textures
  */
 const textureLoader = new THREE.TextureLoader();
-const particleTexture = textureLoader.load('./texture/particles/11.png');
+const particleTexture = textureLoader.load('./textures/particles/11.png');
 
 /*
  * Particles
  */
 //const particleGeometry = new THREE.SphereGeometry(1, 64, 64);
 const particleMaterial = new THREE.PointsMaterial({
-  size: 0.01,
+  size: 0.1,
   sizeAttenuation: true, // here we create perspective, i.e. if the particle is far is should seem small, and large if it's near
   color: 'pink',
-  map: particleTexture
+  transparent: true,
+  alphaMap: particleTexture,
+  // The alphaTest is a value between 0 and 1 that enables webgl/gpu to know when not to render the pixel according to that pixel's
+  // transparency. by default the value is 0 means that pixel will be rendered anyway
+  alphaTest: 0.001,
+  depthWrite: false
 });
 //each individual particle is a plane, so it has only 2 triangles. having plane as an individual particle we put a lot less stress on gpu
 
@@ -56,6 +61,14 @@ particleGeometry.setAttribute(
 
 const particles = new THREE.Points(particleGeometry, particleMaterial);
 scene.add(particles);
+
+// sphere particles
+const particleSphereGeometry = new THREE.SphereGeometry(0.5, 50, 50);
+const particleSpherematerial = new THREE.PointsMaterial({
+  size: 0.01
+});
+const particleSphere = new THREE.Points(particleSphereGeometry, particleSpherematerial);
+scene.add(particleSphere);
 
 /**
  * Sizes
@@ -112,6 +125,10 @@ const clock = new THREE.Clock();
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
+  particles.rotation.y = -elapsedTime * 0.05;
+  particles.rotation.z = -elapsedTime * 0.05;
+  particles.rotation.x = -elapsedTime * 0.05;
+  particleSphere.rotation.y = elapsedTime * 0.5;
 
   // Update controls
   controls.update();
